@@ -1,6 +1,7 @@
 import numpy as np
 import dlib
 from multiprocessing import Process, Queue
+import cv2
 
 def rect_to_bb(rect):
     # take a bounding predicted by dlib and convert it
@@ -31,11 +32,8 @@ def face_detect(q,gray,detector):
 
     q.put(detector(gray,0))
 
-import cv2
 
 predictor_path='shape_predictor_68_face_landmarks.dat'
-
-
 
 detector = dlib.get_frontal_face_detector()
 predictor = dlib.shape_predictor(predictor_path)
