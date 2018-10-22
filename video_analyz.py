@@ -156,6 +156,9 @@ while True:
 
             try:
                 eye_1_gray = cv2.cvtColor(eye_1, cv2.COLOR_BGR2GRAY)
+                eye_1_hsv = cv2.cvtColor(eye_1,cv2.COLOR_BGR2HSV)
+                cv2.imshow("kf",eye_1_hsv)
+                cv2.waitKey(0)
             except:
                 continue
 
