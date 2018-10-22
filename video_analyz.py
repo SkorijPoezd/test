@@ -40,16 +40,6 @@ predictor = dlib.shape_predictor(predictor_path)
 
 cap = cv2.VideoCapture(0)
 
-colors=[(0,0,255),
-        (0,255,0),
-        (255,0,0),
-        (0,255,255),
-        (255,0,255),
-        (255,255,0),
-        (0,0,0),
-        (255,255,255),
-        (180,105,255)]
-
 kk=0
 n=1
 import time as t
@@ -111,7 +101,7 @@ while True:
             except:
                 continue
 
-            img = cv2.threshold(eye_1_gray, 100, 255, cv2.THRESH_BINARY)[1]
+            img = cv2.threshold(eye_1_gray, 50, 255, cv2.THRESH_BINARY)[1]
 
             mask = np.zeros((eye_1.shape[0],eye_1.shape[1],1),np.uint8)
 
@@ -157,18 +147,25 @@ while True:
             try:
                 eye_1_gray = cv2.cvtColor(eye_1, cv2.COLOR_BGR2GRAY)
                 eye_1_hsv = cv2.cvtColor(eye_1,cv2.COLOR_BGR2HSV)
-                cv2.imshow("kf",eye_1_hsv)
-                cv2.waitKey(0)
             except:
                 continue
 
-            img = cv2.threshold(eye_1_gray, 100, 255, cv2.THRESH_BINARY)[1]
+            img = cv2.threshold(eye_1_gray, 50, 255, cv2.THRESH_BINARY)[1]
+            #eye_1_hsv = cv2.threshold(eye_1_hsv, 100, 255, cv2.THRESH_BINARY)[1]
 
             mask = np.zeros((eye_1.shape[0], eye_1.shape[1], 1), np.uint8)
 
             cv2.fillPoly(mask, [np.array(cache)], 1)
+
             img = cv2.bitwise_and(img, img, mask=mask, dst=np.array(
                 [[[127] for __ in range(eye_1.shape[1])] for _ in range(eye_1.shape[0])], np.uint8))
+
+            eye_1_hsv = cv2.bitwise_and(eye_1_hsv, eye_1_hsv, mask=mask, dst=np.array(
+                [[[127] for __ in range(eye_1.shape[1])] for _ in range(eye_1.shape[0])], np.uint8))
+
+            eye_1_hsv = cv2.resize(eye_1_hsv, (eye_1_hsv.shape[1] * 5, eye_1_hsv.shape[0] * 5))
+            cv2.imshow("kf", np.concatenate((eye_1_hsv[:, :, 0], eye_1_hsv[:, :, 1], eye_1_hsv[:, :, 2]), axis=1))
+            cv2.waitKey(0)
 
             cX_list = []
             cY_list = []
