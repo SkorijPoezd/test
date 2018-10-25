@@ -13,6 +13,8 @@ from keras.models import Model
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 import keras.backend as K
 import tensorflow as tf
+from keras.engine.topology import Layer
+
 class LossHistory(keras.callbacks.Callback):
     def on_train_begin(self,logs={}):
         self.losses=[]
@@ -25,6 +27,26 @@ class LossHistory(keras.callbacks.Callback):
 def custom_loss(y_true,y_pred):
     return mean_squared_error(y_true, y_pred)
     #return mean_squared_error(y_true,y_pred) + (510 - K.sum(K.flatten(y_pred)))
+
+class ThresholdLayer(Layer):
+    def __init__(self,**kwargs):
+        super(ThresholdLayer,self).__init__(**kwargs)
+
+    def build(self, input_shape):
+        self.kernel = self.add_weight(name = "kernel",
+                                      shape=1,
+                                      initializer="uniform",
+                                      trainable=True)
+
+        super(ThresholdLayer, self).build(input_shape)
+
+    def call(self, x):
+        print(self.kernel)
+        return K.tf.to_int32(x<self.kernel)
+
+    def compute_output_shape(self, input_shape):
+        return input_shape
+
 
 paths_data=os.listdir("eye_position")
 
